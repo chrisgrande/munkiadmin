@@ -33,6 +33,16 @@ DDLogLevel ddLogLevel;
 
 @implementation MAManifestsView
 
+- (NSArray *)defaultSortDescriptors
+{
+    NSData *sortersFromDefaults = [[NSUserDefaults standardUserDefaults] dataForKey:@"manifestsSortDescriptors"];
+    if (sortersFromDefaults) {
+        return [NSUnarchiver unarchiveObjectWithData:sortersFromDefaults];
+    } else {
+        return @[[NSSortDescriptor sortDescriptorWithKey:@"titleOrDisplayName" ascending:YES selector:@selector(localizedStandardCompare:)]];
+    }
+}
+
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -178,6 +188,32 @@ DDLogLevel ddLogLevel;
     [rowTemplates addObject:simpleStringsRowTemplate];
     
     /*
+     Numeric
+     */
+    NSArray *numericLeftExpressions = @[
+                                        [NSExpression expressionForKeyPath:@"managedInstallsCount"],
+                                        [NSExpression expressionForKeyPath:@"managedUninstallsCount"],
+                                        [NSExpression expressionForKeyPath:@"managedUpdatesCount"],
+                                        [NSExpression expressionForKeyPath:@"optionalInstallsCount"],
+                                        [NSExpression expressionForKeyPath:@"includedManifestsCount"],
+                                        [NSExpression expressionForKeyPath:@"referencingManifestsCount"],
+                                        [NSExpression expressionForKeyPath:@"conditionsCount"]];
+    NSArray *numericOperators = @[
+                                 @(NSGreaterThanPredicateOperatorType),
+                                 @(NSGreaterThanOrEqualToPredicateOperatorType),
+                                 @(NSLessThanPredicateOperatorType),
+                                 @(NSLessThanOrEqualToPredicateOperatorType),
+                                 @(NSEqualToPredicateOperatorType),
+                                 @(NSNotEqualToPredicateOperatorType)
+                                 ];
+    NSPredicateEditorRowTemplate *numericRowTemplate = [[NSPredicateEditorRowTemplate alloc] initWithLeftExpressions:numericLeftExpressions
+                                                                                              rightExpressionAttributeType:NSInteger64AttributeType
+                                                                                                                  modifier:NSDirectPredicateModifier
+                                                                                                                 operators:numericOperators
+                                                                                                                   options:0];
+    [rowTemplates addObject:numericRowTemplate];
+    
+    /*
      Strings that need the ANY modifier
      */
     NSArray *containsOperator = @[
@@ -214,6 +250,20 @@ DDLogLevel ddLogLevel;
                                  @"%[manifestUserName]@ %[is, is not, contains, begins with, ends with]@ %@" : @"%[Username]@ %[is, is not, contains, begins with, ends with]@ %@",
                                  @"%[manifestDisplayName]@ %[is, is not, contains, begins with, ends with]@ %@" : @"%[Display name]@ %[is, is not, contains, begins with, ends with]@ %@",
                                  @"%[manifestAdminNotes]@ %[is, is not, contains, begins with, ends with]@ %@" : @"%[Notes]@ %[is, is not, contains, begins with, ends with]@ %@",
+                                 @"%[managedInstallsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of managed installs]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
+                                 @"%[managedUninstallsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of managed uninstalls]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
+                                 @"%[managedUpdatesCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of managed updates]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
+                                 @"%[optionalInstallsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of optional installs]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
+                                 @"%[includedManifestsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of included manifests]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
+                                 @"%[referencingManifestsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of referencing manifests]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
+                                 @"%[conditionsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of conditions]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
                                  @"%[allPackageStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any installs item]@ %[contains, begins with, ends with]@ %@",
                                  @"%[catalogStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any catalog]@ %[contains, begins with, ends with]@ %@",
                                  @"%[managedInstallsStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any managed installs item]@ %[contains, begins with, ends with]@ %@",
@@ -287,22 +337,44 @@ DDLogLevel ddLogLevel;
      Create a contextual menu for customizing table columns
      */
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
-    NSSortDescriptor *sortByHeaderString = [NSSortDescriptor sortDescriptorWithKey:@"headerCell.stringValue" ascending:YES selector:@selector(localizedStandardCompare:)];
-    NSArray *tableColumnsSorted = [self.manifestsListTableView.tableColumns sortedArrayUsingDescriptors:@[sortByHeaderString]];
-    for (NSTableColumn *col in tableColumnsSorted) {
-        NSMenuItem *mi = nil;
-        if ([[col identifier] isEqualToString:@"manifestsTableColumnIcon"]) {
-            mi = [[NSMenuItem alloc] initWithTitle:@"Icon"
+    for (NSTableColumn *column in self.manifestsListTableView.tableColumns) {
+        NSMenuItem *menuItem = nil;
+        if ([[column identifier] isEqualToString:@"manifestsTableColumnIcon"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Icon"
                                             action:@selector(toggleColumn:)
                                      keyEquivalent:@""];
+        } else if ([[column identifier] isEqualToString:@"manifestsTableColumnManagedInstallsCount"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Managed Installs"
+                                                  action:@selector(toggleColumn:)
+                                           keyEquivalent:@""];
+        } else if ([[column identifier] isEqualToString:@"manifestsTableColumnManagedUpdatesCount"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Managed Updates"
+                                                  action:@selector(toggleColumn:)
+                                           keyEquivalent:@""];
+        } else if ([[column identifier] isEqualToString:@"manifestsTableColumnManagedUninstallsCount"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Managed Uninstalls"
+                                                  action:@selector(toggleColumn:)
+                                           keyEquivalent:@""];
+        } else if ([[column identifier] isEqualToString:@"manifestsTableColumnOptionalInstallsCount"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Optional Installs"
+                                                  action:@selector(toggleColumn:)
+                                           keyEquivalent:@""];
+        } else if ([[column identifier] isEqualToString:@"manifestsTableColumnIncludedManifestsCount"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Included Manifests"
+                                                  action:@selector(toggleColumn:)
+                                           keyEquivalent:@""];
+        } else if ([[column identifier] isEqualToString:@"manifestsTableColumnReferencingManifestsCount"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Referencing Manifests"
+                                                  action:@selector(toggleColumn:)
+                                           keyEquivalent:@""];
         } else {
-            mi = [[NSMenuItem alloc] initWithTitle:[col.headerCell stringValue]
+            menuItem = [[NSMenuItem alloc] initWithTitle:[column.headerCell stringValue]
                                             action:@selector(toggleColumn:)
                                      keyEquivalent:@""];
         }
-        mi.target = self;
-        mi.representedObject = col;
-        [menu addItem:mi];
+        menuItem.target = self;
+        menuItem.representedObject = column;
+        [menu addItem:menuItem];
     }
     menu.delegate = self;
     self.manifestsListTableView.headerView.menu = menu;
@@ -321,7 +393,7 @@ DDLogLevel ddLogLevel;
     self.modelObjects = [NSMutableArray new];
     
     [self setUpDataModel];
-    self.defaultSortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"titleOrDisplayName" ascending:YES selector:@selector(localizedStandardCompare:)]];
+    
     self.manifestsArrayController.sortDescriptors = self.defaultSortDescriptors;
     
     [self.sourceList reloadData];

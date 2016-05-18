@@ -320,11 +320,27 @@
     }
 }
 
-- (NSString *)managedInstallsCountDescription
+- (NSNumber *)managedInstallsCount
 {
     NSSet *allConditionalItems = [self valueForKeyPath:@"conditionalItems.@distinctUnionOfSets.managedInstalls"];
     NSNumber *numManagedInstalls = [self valueForKeyPath:@"managedInstallsFaster.@count"];
     NSUInteger all = [allConditionalItems count] + [numManagedInstalls unsignedIntegerValue];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)managedInstallsCountShortDescription
+{
+    NSUInteger all = [self.managedInstallsCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.managedInstallsCount stringValue];
+    }
+}
+
+- (NSString *)managedInstallsCountDescription
+{
+    NSUInteger all = [self.managedInstallsCount unsignedIntegerValue];
     if (all == 0) {
         return @"No managed installs";
     } else if (all == 1) {
@@ -336,11 +352,27 @@
     }
 }
 
-- (NSString *)managedUninstallsCountDescription
+- (NSNumber *)managedUninstallsCount
 {
     NSSet *allConditionalItems = [self valueForKeyPath:@"conditionalItems.@distinctUnionOfSets.managedUninstalls"];
     NSNumber *numManagedInstalls = [self valueForKeyPath:@"managedUninstallsFaster.@count"];
     NSUInteger all = [allConditionalItems count] + [numManagedInstalls unsignedIntegerValue];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)managedUninstallsCountShortDescription
+{
+    NSUInteger all = [self.managedUninstallsCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.managedUninstallsCount stringValue];
+    }
+}
+
+- (NSString *)managedUninstallsCountDescription
+{
+    NSUInteger all = [self.managedUninstallsCount unsignedIntegerValue];
     if (all == 0) {
         return @"No managed uninstalls";
     } else if (all == 1) {
@@ -352,11 +384,27 @@
     }
 }
 
-- (NSString *)managedUpdatesCountDescription
+- (NSNumber *)managedUpdatesCount
 {
     NSSet *allConditionalItems = [self valueForKeyPath:@"conditionalItems.@distinctUnionOfSets.managedUpdates"];
     NSNumber *numManagedInstalls = [self valueForKeyPath:@"managedUpdatesFaster.@count"];
     NSUInteger all = [allConditionalItems count] + [numManagedInstalls unsignedIntegerValue];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)managedUpdatesCountShortDescription
+{
+    NSUInteger all = [self.managedUpdatesCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.managedUpdatesCount stringValue];
+    }
+}
+
+- (NSString *)managedUpdatesCountDescription
+{
+    NSUInteger all = [self.managedUpdatesCount unsignedIntegerValue];
     if (all == 0) {
         return @"No managed updates";
     } else if (all == 1) {
@@ -368,11 +416,27 @@
     }
 }
 
-- (NSString *)optionalInstallsCountDescription
+- (NSNumber *)optionalInstallsCount
 {
     NSSet *allConditionalItems = [self valueForKeyPath:@"conditionalItems.@distinctUnionOfSets.optionalInstalls"];
     NSNumber *numManagedInstalls = [self valueForKeyPath:@"optionalInstallsFaster.@count"];
     NSUInteger all = [allConditionalItems count] + [numManagedInstalls unsignedIntegerValue];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)optionalInstallsCountShortDescription
+{
+    NSUInteger all = [self.optionalInstallsCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.optionalInstallsCount stringValue];
+    }
+}
+
+- (NSString *)optionalInstallsCountDescription
+{
+    NSUInteger all = [self.optionalInstallsCount unsignedIntegerValue];
     if (all == 0) {
         return @"No optional installs";
     } else if (all == 1) {
@@ -384,11 +448,27 @@
     }
 }
 
-- (NSString *)includedManifestsCountDescription
+- (NSNumber *)includedManifestsCount
 {
     NSSet *allConditionalItems = [self valueForKeyPath:@"conditionalItems.@distinctUnionOfSets.includedManifests"];
     NSNumber *numManagedInstalls = [self valueForKeyPath:@"includedManifestsFaster.@count"];
     NSUInteger all = [allConditionalItems count] + [numManagedInstalls unsignedIntegerValue];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)includedManifestsCountShortDescription
+{
+    NSUInteger all = [self.includedManifestsCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.includedManifestsCount stringValue];
+    }
+}
+
+- (NSString *)includedManifestsCountDescription
+{
+    NSUInteger all = [self.includedManifestsCount unsignedIntegerValue];
     if (all == 0) {
         return @"No included manifests";
     } else if (all == 1) {
@@ -400,10 +480,26 @@
     }
 }
 
-- (NSString *)referencingManifestsCountDescription
+- (NSNumber *)referencingManifestsCount
 {
     NSSet *manifestStringObjects = [self.referencingManifests filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"typeString == %@", @"includedManifest"]];
     NSUInteger all = [manifestStringObjects count];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)referencingManifestsCountShortDescription
+{
+    NSUInteger all = [self.referencingManifestsCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.referencingManifestsCount stringValue];
+    }
+}
+
+- (NSString *)referencingManifestsCountDescription
+{
+    NSUInteger all = [self.referencingManifestsCount unsignedIntegerValue];
     if (all == 0) {
         return @"No referencing manifests";
     } else if (all == 1) {
@@ -415,9 +511,25 @@
     }
 }
 
+- (NSNumber *)conditionsCount
+{
+    NSUInteger all = [self.conditionalItems count];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)conditionsCountShortDescription
+{
+    NSUInteger all = [self.conditionsCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.conditionsCount stringValue];
+    }
+}
+
 - (NSString *)conditionsCountDescription
 {
-    NSUInteger count = [self.conditionalItems count];
+    NSUInteger count = [self.conditionsCount unsignedIntegerValue];
     if (count == 0) {
         return @"No conditions";
     } else if (count == 1) {
