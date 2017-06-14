@@ -26,37 +26,66 @@
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
     
     NSArray *catalogDescriptionKeys = @[@"catalogsDescriptionString", @"catalogStrings"];
-    NSArray *managedInstallsKeys = @[@"managedInstallsStrings", @"managedInstallsCountDescription"];
-    NSArray *managedUninstallsKeys = @[@"managedUninstallsStrings", @"managedUninstallsCountDescription"];
-    NSArray *managedUpdatesKeys = @[@"managedUpdatesStrings", @"managedUpdatesCountDescription"];
-    NSArray *optionalInstallsKeys = @[@"optionalInstallsStrings", @"optionalInstallsCountDescription"];
-    NSArray *conditionalsKeys = @[@"conditionalItemsStrings", @"conditionsCountDescription", @"rootConditionalItems"];
-    NSArray *includedManifestsKeys = @[@"includedManifestsStrings", @"includedManifestsCountDescription"];
-    NSArray *referencingManifestsKeys = @[@"referencingManifestsStrings", @"referencingManifestsCountDescription"];
+    NSArray *managedInstallsKeys = @[@"managedInstallsStrings",
+                                     @"managedInstallsCount",
+                                     @"managedInstallsCountDescription",
+                                     @"managedInstallsCountShortDescription"];
+    NSArray *managedUninstallsKeys = @[@"managedUninstallsStrings",
+                                       @"managedUninstallsCount",
+                                       @"managedUninstallsCountDescription",
+                                       @"managedUninstallsCountShortDescription"];
+    NSArray *managedUpdatesKeys = @[@"managedUpdatesStrings",
+                                    @"managedUpdatesCount",
+                                    @"managedUpdatesCountDescription",
+                                    @"managedUpdatesCountShortDescription"];
+    NSArray *optionalInstallsKeys = @[@"optionalInstallsStrings",
+                                      @"optionalInstallsCount",
+                                      @"optionalInstallsCountDescription",
+                                      @"optionalInstallsCountShortDescription"];
+    NSArray *featuredItemsKeys = @[@"featuredItemsStrings",
+                                   @"featuredItemsCount",
+                                   @"featuredItemsCountDescription",
+                                   @"featuredItemsCountShortDescription"];
+    NSArray *conditionalsKeys = @[@"conditionalItemsStrings",
+                                  @"conditionsCount",
+                                  @"conditionsCountDescription",
+                                  @"conditionsCountShortDescription",
+                                  @"rootConditionalItems"];
+    NSArray *includedManifestsKeys = @[@"includedManifestsStrings",
+                                       @"includedManifestsCount",
+                                       @"includedManifestsCountDescription",
+                                       @"includedManifestsCountShortDescription"];
+    NSArray *referencingManifestsKeys = @[@"referencingManifestsStrings",
+                                          @"referencingManifestsCount",
+                                          @"referencingManifestsCountDescription",
+                                          @"referencingManifestsCountShortDescription"];
     
     if ([catalogDescriptionKeys containsObject:key]) {
         NSSet *affectingKeys = [NSSet setWithObjects:@"catalogs", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([managedInstallsKeys containsObject:key]) {
-        NSSet *affectingKeys = [NSSet setWithObjects:@"managedInstallsFaster", nil];
+        NSSet *affectingKeys = [NSSet setWithObjects:@"managedInstallsFaster", @"conditionalItems", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([managedUninstallsKeys containsObject:key]) {
-        NSSet *affectingKeys = [NSSet setWithObjects:@"managedUninstallsFaster", nil];
+        NSSet *affectingKeys = [NSSet setWithObjects:@"managedUninstallsFaster", @"conditionalItems", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([managedUpdatesKeys containsObject:key]) {
-        NSSet *affectingKeys = [NSSet setWithObjects:@"managedUpdatesFaster", nil];
+        NSSet *affectingKeys = [NSSet setWithObjects:@"managedUpdatesFaster", @"conditionalItems", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([optionalInstallsKeys containsObject:key]) {
-        NSSet *affectingKeys = [NSSet setWithObjects:@"optionalInstallsFaster", nil];
+        NSSet *affectingKeys = [NSSet setWithObjects:@"optionalInstallsFaster", @"conditionalItems", nil];
+        keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
+    } else if ([featuredItemsKeys containsObject:key]) {
+        NSSet *affectingKeys = [NSSet setWithObjects:@"featuredItems", @"conditionalItems", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([conditionalsKeys containsObject:key]) {
         NSSet *affectingKeys = [NSSet setWithObjects:@"conditionalItems", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([includedManifestsKeys containsObject:key]) {
-        NSSet *affectingKeys = [NSSet setWithObjects:@"includedManifestsFaster", nil];
+        NSSet *affectingKeys = [NSSet setWithObjects:@"includedManifestsFaster", @"conditionalItems", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([referencingManifestsKeys containsObject:key]) {
-        NSSet *affectingKeys = [NSSet setWithObjects:@"referencingManifests", nil];
+        NSSet *affectingKeys = [NSSet setWithObjects:@"referencingManifests", @"conditionalItems", nil];
         keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKeys];
     } else if ([key isEqualToString:@"titleOrDisplayName"]) {
         NSSet *affectingKeys = [NSSet setWithObjects:@"title", @"manifestDisplayName", nil];
@@ -138,6 +167,12 @@
     }
     
     for (StringObjectMO *item in self.optionalInstallsFaster) {
+        if (![items containsObject:[item title]]) {
+            [items addObject:[item title]];
+        }
+    }
+    
+    for (StringObjectMO *item in self.featuredItems) {
         if (![items containsObject:[item title]]) {
             [items addObject:[item title]];
         }
@@ -231,6 +266,30 @@
     
     for (ConditionalItemMO *condition in self.conditionalItems) {
         for (StringObjectMO *item in condition.optionalInstalls) {
+            if (![items containsObject:[item title]]) {
+                [items addObject:[item title]];
+            }
+        }
+    }
+    
+    if ([items count] == 0) {
+        return nil;
+    } else {
+        return [items sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
+    }
+}
+
+- (NSArray *)featuredItemsStrings
+{
+    NSMutableArray *items = [NSMutableArray new];
+    for (StringObjectMO *item in self.featuredItems) {
+        if (![items containsObject:[item title]]) {
+            [items addObject:[item title]];
+        }
+    }
+    
+    for (ConditionalItemMO *condition in self.conditionalItems) {
+        for (StringObjectMO *item in condition.featuredItems) {
             if (![items containsObject:[item title]]) {
                 [items addObject:[item title]];
             }
@@ -451,6 +510,38 @@
     }
 }
 
+- (NSNumber *)featuredItemsCount
+{
+    NSSet *allFeaturedItems = [self valueForKeyPath:@"conditionalItems.@distinctUnionOfSets.featuredItems"];
+    NSNumber *numFeaturedItems = [self valueForKeyPath:@"featuredItems.@count"];
+    NSUInteger all = [allFeaturedItems count] + [numFeaturedItems unsignedIntegerValue];
+    return [NSNumber numberWithUnsignedInteger:all];
+}
+
+- (NSString *)featuredItemsCountShortDescription
+{
+    NSUInteger all = [self.featuredItemsCount unsignedIntegerValue];
+    if (all == 0) {
+        return nil;
+    } else {
+        return [self.featuredItemsCount stringValue];
+    }
+}
+
+- (NSString *)featuredItemsCountDescription
+{
+    NSUInteger all = [self.featuredItemsCount unsignedIntegerValue];
+    if (all == 0) {
+        return @"No featured items";
+    } else if (all == 1) {
+        return @"1 featured item";
+    } else if (all > 1) {
+        return [NSString stringWithFormat:@"%lu featured items", (unsigned long)all];
+    } else {
+        return [NSString stringWithFormat:@""];
+    }
+}
+
 - (NSNumber *)includedManifestsCount
 {
     NSSet *allConditionalItems = [self valueForKeyPath:@"conditionalItems.@distinctUnionOfSets.includedManifests"];
@@ -627,6 +718,7 @@
     NSUInteger manUnCount = 0;
     NSUInteger manUpCount = 0;
     NSUInteger optInCount = 0;
+    NSUInteger featCount = 0;
     NSUInteger incManCount = 0;
     
     for (ConditionalItemMO *condition in self.conditionalItems) {
@@ -634,6 +726,7 @@
         manUnCount += [condition.managedUninstalls count];
         manUpCount += [condition.managedUpdates count];
         optInCount += [condition.optionalInstalls count];
+        featCount += [condition.featuredItems count];
         incManCount += [condition.includedManifests count];
     }
     
@@ -641,6 +734,7 @@
     manUnCount += [self.managedUninstallsFaster count];
     manUpCount += [self.managedUpdatesFaster count];
     optInCount += [self.optionalInstallsFaster count];
+    featCount += [self.featuredItems count];
     incManCount += [self.includedManifestsFaster count];
     
     if (manInCount > 0) {
@@ -651,6 +745,9 @@
     }
     if (optInCount > 0) {
         descriptionString = [descriptionString stringByAppendingFormat:@"%lu optional installs, ", (unsigned long)optInCount];
+    }
+    if (featCount > 0) {
+        descriptionString = [descriptionString stringByAppendingFormat:@"%lu featured items, ", (unsigned long)featCount];
     }
     if (manUpCount > 0) {
         descriptionString = [descriptionString stringByAppendingFormat:@"%lu updates, ", (unsigned long)manUpCount];
@@ -805,6 +902,27 @@
 			[tmpDict setObject:[NSArray array] forKey:@"optional_installs"];
 		}
 	}
+    
+    /*
+     featured_items
+     */
+    NSArray *featuredItemsSorters;
+    if ([defaults boolForKey:@"sortFeaturedItemsByTitle"]) {
+        featuredItemsSorters = [NSArray arrayWithObjects:sortByTitle, sortByIndex, nil];
+    } else {
+        featuredItemsSorters = [NSArray arrayWithObjects:sortByIndex, sortByTitle, nil];
+    }
+    if ([self.featuredItems count] > 0) {
+        NSMutableArray *featuredItems = [NSMutableArray arrayWithCapacity:[self.featuredItems count]];
+        for (StringObjectMO *featuredItem in [self.featuredItems sortedArrayUsingDescriptors:featuredItemsSorters]) {
+            [featuredItems addObject:featuredItem.title];
+        }
+        [tmpDict setObject:featuredItems forKey:@"featured_items"];
+    } else {
+        if ([(NSDictionary *)self.originalManifest objectForKey:@"featured_items"] != nil) {
+            [tmpDict setObject:[NSArray array] forKey:@"featured_items"];
+        }
+    }
 	
     
     /*

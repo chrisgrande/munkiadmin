@@ -25,6 +25,7 @@
 @class MAAdvancedPackageEditor;
 @class MAPkginfoAssimilator;
 @class MAPreferences;
+@class MAMunkiImportController;
 @class DDFileLogger;
 
 
@@ -56,6 +57,7 @@
 @property (strong) MAPackageNameEditor *packageNameEditor;
 @property (strong) MAPackagesView *packagesViewController;
 @property (strong) MAManifestsView *manifestsViewController;
+@property (strong) MAMunkiImportController *munkiImportController;
 @property (strong) MAPreferences *preferencesController;
 @property (strong) NSTimer *operationTimer;
 @property (strong) DDFileLogger *currentFileLogger;
@@ -133,6 +135,7 @@
 - (IBAction)createNewRepository:sender;
 - (IBAction)createNewManifestAction:sender;
 - (IBAction)createNewCatalogAction:sender;
+- (IBAction)importManifestsFromFileAction:sender;
 - (void)addNewPackagesFromFileURLs:(NSArray *)filesToAdd;
 - (IBAction)addNewPackage:sender;
 - (IBAction)addNewInstallsItem:sender;

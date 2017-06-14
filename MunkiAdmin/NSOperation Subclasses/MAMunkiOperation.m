@@ -15,31 +15,37 @@ DDLogLevel ddLogLevel;
 
 + (id)makecatalogsOperationWithTarget:(NSURL *)target
 {
-	return [[self alloc] initWithCommand:@"makecatalogs" targetURL:target arguments:nil];
+	return [[self alloc] initWithCommand:@"makecatalogs" targetURL:target arguments:nil munkitoolsVersion:nil];
+}
+
++ (id)makecatalogsOperationWithTarget:(NSURL *)target munkitoolsVersion:(NSString *)version
+{
+    return [[self alloc] initWithCommand:@"makecatalogs" targetURL:target arguments:nil munkitoolsVersion:version];
 }
 
 + (id)makepkginfoOperationWithSource:(NSURL *)sourceFile
 {
-	return [[self alloc] initWithCommand:@"makepkginfo" targetURL:sourceFile arguments:nil];
+	return [[self alloc] initWithCommand:@"makepkginfo" targetURL:sourceFile arguments:nil munkitoolsVersion:nil];
 }
 
 + (id)installsItemFromURL:(NSURL *)sourceFile
 {
-	return [[self alloc] initWithCommand:@"installsitem" targetURL:sourceFile arguments:@[@"--file"]];
+	return [[self alloc] initWithCommand:@"installsitem" targetURL:sourceFile arguments:@[@"--file"] munkitoolsVersion:nil];
 }
 
 + (id)installsItemFromPath:(NSString *)pathToFile
 {
     NSURL *fileURL = [NSURL fileURLWithPath:pathToFile];
-	return [[self alloc] initWithCommand:@"installsitem" targetURL:fileURL arguments:@[@"--file"]];
+	return [[self alloc] initWithCommand:@"installsitem" targetURL:fileURL arguments:@[@"--file"] munkitoolsVersion:nil];
 }
 
-- (id)initWithCommand:(NSString *)cmd targetURL:(NSURL *)target arguments:(NSArray *)args
+- (id)initWithCommand:(NSString *)cmd targetURL:(NSURL *)target arguments:(NSArray *)args munkitoolsVersion:(NSString *)version
 {
 	if ((self = [super init])) {
-		self.command = cmd;
-		self.targetURL = target;
-		self.arguments = args;
+		_command = cmd;
+		_targetURL = target;
+		_arguments = args;
+        _munkitoolsVersion = version;
         DDLogDebug(@"Initializing munki operation: %@, target: %@", self.command, [self.targetURL relativePath]);
 	}
 	return self;
@@ -63,13 +69,19 @@ DDLogLevel ddLogLevel;
     makecatalogsTask.standardError = makecatalogsPipe;
     makecatalogsTask.standardInput = [NSPipe pipe];
     
+    NSMutableDictionary *defaultEnv = [[NSMutableDictionary alloc] initWithDictionary:[[NSProcessInfo processInfo] environment]];
+    [defaultEnv setObject:@"YES" forKey:@"NSUnbufferedIO"] ;
+    makecatalogsTask.environment = defaultEnv;
+     
+    NSString *repoArg = [self.targetURL path];
+    
     /*
      Check the "Disable sanity checks" preference
      */
     if ([self.defaults boolForKey:@"makecatalogsForceEnabled"]) {
-        makecatalogsTask.arguments = @[@"--force", [self.targetURL relativePath]];
+        makecatalogsTask.arguments = @[@"--force", repoArg];
     } else {
-        makecatalogsTask.arguments = @[[self.targetURL relativePath]];
+        makecatalogsTask.arguments = @[repoArg];
     }
     DDLogDebug(@"Running %@ with arguments: %@", makecatalogsTask.launchPath, makecatalogsTask.arguments);
     

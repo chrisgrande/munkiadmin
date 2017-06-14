@@ -39,6 +39,7 @@
 @property (weak) IBOutlet NSArrayController *managedUninstallsArrayController;
 @property (weak) IBOutlet NSArrayController *managedUpdatesArrayController;
 @property (weak) IBOutlet NSArrayController *optionalInstallsArrayController;
+@property (weak) IBOutlet NSArrayController *featuredItemsArrayController;
 @property (weak) IBOutlet NSArrayController *includedManifestsArrayController;
 @property (weak) IBOutlet NSArrayController *referencingManifestsArrayController;
 @property (weak) IBOutlet NSMenu *referencingManifestsConditionMenu;
@@ -48,7 +49,7 @@
 @property (weak) IBOutlet NSTreeController *conditionsTreeController;
 @property (strong) IBOutlet NSScrollView *sourceListView;
 @property (strong) NSArray *sourceListItems;
-@property (assign) ManifestMO *manifestToEdit;
+@property (strong) ManifestMO *manifestToEdit;
 @property (strong) MASelectPkginfoItemsWindow *addItemsWindowController;
 @property (strong) MASelectManifestItemsWindow *selectManifestsWindowController;
 @property (strong) MAPredicateEditor *predicateEditor;

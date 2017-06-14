@@ -15,6 +15,7 @@
 #import "MARequestStringValueController.h"
 #import "CocoaLumberjack.h"
 #import "MAManifestEditor.h"
+#import "MAManifestImporter.h"
 
 DDLogLevel ddLogLevel;
 
@@ -195,6 +196,7 @@ DDLogLevel ddLogLevel;
                                         [NSExpression expressionForKeyPath:@"managedUninstallsCount"],
                                         [NSExpression expressionForKeyPath:@"managedUpdatesCount"],
                                         [NSExpression expressionForKeyPath:@"optionalInstallsCount"],
+                                        [NSExpression expressionForKeyPath:@"featuredItemsCount"],
                                         [NSExpression expressionForKeyPath:@"includedManifestsCount"],
                                         [NSExpression expressionForKeyPath:@"referencingManifestsCount"],
                                         [NSExpression expressionForKeyPath:@"conditionsCount"]];
@@ -228,6 +230,7 @@ DDLogLevel ddLogLevel;
                                  [NSExpression expressionForKeyPath:@"managedUninstallsStrings"],
                                  [NSExpression expressionForKeyPath:@"managedUpdatesStrings"],
                                  [NSExpression expressionForKeyPath:@"optionalInstallsStrings"],
+                                 [NSExpression expressionForKeyPath:@"featuredItemsStrings"],
                                  [NSExpression expressionForKeyPath:@"includedManifestsStrings"],
                                  [NSExpression expressionForKeyPath:@"referencingManifestsStrings"],
                                  [NSExpression expressionForKeyPath:@"conditionalItemsStrings"],
@@ -258,6 +261,8 @@ DDLogLevel ddLogLevel;
                                      @"%[Number of managed updates]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
                                  @"%[optionalInstallsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
                                      @"%[Number of optional installs]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
+                                 @"%[featuredItemsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
+                                     @"%[Number of featured items]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
                                  @"%[includedManifestsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
                                      @"%[Number of included manifests]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@",
                                  @"%[referencingManifestsCount]@ %[is, is not, is greater than, is greater than or equal to, is less than, is less than or equal to]@ %@" :
@@ -270,6 +275,7 @@ DDLogLevel ddLogLevel;
                                  @"%[managedUninstallsStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any managed uninstalls item]@ %[contains, begins with, ends with]@ %@",
                                  @"%[managedUpdatesStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any managed updates item]@ %[contains, begins with, ends with]@ %@",
                                  @"%[optionalInstallsStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any optional installs item]@ %[contains, begins with, ends with]@ %@",
+                                 @"%[featuredItemsStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any featured item]@ %[contains, begins with, ends with]@ %@",
                                  @"%[includedManifestsStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any included manifest]@ %[contains, begins with, ends with]@ %@",
                                  @"%[referencingManifestsStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any referencing manifest]@ %[contains, begins with, ends with]@ %@",
                                  @"%[conditionalItemsStrings]@ %[contains, begins with, ends with]@ %@" : @"%[Any condition predicate string]@ %[contains, begins with, ends with]@ %@",
@@ -320,6 +326,8 @@ DDLogLevel ddLogLevel;
     
     self.requestStringValue = [[MARequestStringValueController alloc] initWithWindowNibName:@"MARequestStringValueController"];
     
+    self.manifestImporter = [[MAManifestImporter alloc] initWithWindowNibName:@"MAManifestImporter"];
+    
     [self setupFindView];
     
     //[self updateSourceListData];
@@ -364,6 +372,10 @@ DDLogLevel ddLogLevel;
                                            keyEquivalent:@""];
         } else if ([[column identifier] isEqualToString:@"manifestsTableColumnOptionalInstallsCount"]) {
             menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Optional Installs"
+                                                  action:@selector(toggleColumn:)
+                                           keyEquivalent:@""];
+        } else if ([[column identifier] isEqualToString:@"manifestsTableColumnFeaturedItemsCount"]) {
+            menuItem = [[NSMenuItem alloc] initWithTitle:@"Number of Featured Items"
                                                   action:@selector(toggleColumn:)
                                            keyEquivalent:@""];
         } else if ([[column identifier] isEqualToString:@"manifestsTableColumnIncludedManifestsCount"]) {
@@ -481,28 +493,26 @@ DDLogLevel ddLogLevel;
     /*
      Machine manifests item
      */
-    MAManifestsViewSourceListItem *machineManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"Machine Manifests" identifier:@"machineManifests" type:ManifestSourceItemTypeBuiltin];
+    MAManifestsViewSourceListItem *machineManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"Includes Only" identifier:@"machineManifests" type:ManifestSourceItemTypeBuiltin];
     machineManifestsItem.filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[noReferencingManifests, hasIncludedManifests]];
     
     /*
      Group manifests item
      */
-    MAManifestsViewSourceListItem *groupManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"Group Manifests" identifier:@"groupManifests" type:ManifestSourceItemTypeBuiltin];
+    MAManifestsViewSourceListItem *groupManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"Includes And Included" identifier:@"groupManifests" type:ManifestSourceItemTypeBuiltin];
     groupManifestsItem.filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[hasReferencingManifests, hasIncludedManifests]];
     
     /*
      Profile manifests item
      */
-    MAManifestsViewSourceListItem *installManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"Install Manifests" identifier:@"installManifests" type:ManifestSourceItemTypeBuiltin];
+    MAManifestsViewSourceListItem *installManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"Included Only" identifier:@"installManifests" type:ManifestSourceItemTypeBuiltin];
     installManifestsItem.filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[hasReferencingManifests, noIncludedManifests]];
     
     /*
      Self-contained manifests item
      */
-    /*
-    MAManifestsViewSourceListItem *selfContainedManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"Self-contained Manifests" identifier:@"selfContainedManifests" type:ManifestSourceItemTypeBuiltin];
+    MAManifestsViewSourceListItem *selfContainedManifestsItem = [MAManifestsViewSourceListItem collectionWithTitle:@"No Includes And Not Included" identifier:@"selfContainedManifests" type:ManifestSourceItemTypeBuiltin];
     selfContainedManifestsItem.filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[noReferencingManifests, noIncludedManifests]];
-     */
     
     // Icon images we're going to use in the Source List.
     
@@ -546,7 +556,7 @@ DDLogLevel ddLogLevel;
     }
     
     // Store all of the model objects in an array because each source list item only holds a weak reference to them.
-    self.modelObjects = [@[allManifestsItem, recentlyModifiedItem, machineManifestsItem, groupManifestsItem, installManifestsItem] mutableCopy];
+    self.modelObjects = [@[allManifestsItem, recentlyModifiedItem, machineManifestsItem, groupManifestsItem, installManifestsItem, selfContainedManifestsItem] mutableCopy];
     [self.modelObjects addObjectsFromArray:catalogSourceListItems];
     
     
@@ -560,6 +570,7 @@ DDLogLevel ddLogLevel;
     manifestTypesItem.children = @[[PXSourceListItem itemWithRepresentedObject:machineManifestsItem icon:document],
                                    [PXSourceListItem itemWithRepresentedObject:groupManifestsItem icon:documents],
                                    [PXSourceListItem itemWithRepresentedObject:installManifestsItem icon:documentDownload],
+                                   [PXSourceListItem itemWithRepresentedObject:selfContainedManifestsItem icon:document],
                                    ];
     
     PXSourceListItem *catalogsItem = [PXSourceListItem itemWithTitle:[self uppercaseOrCapitalizedHeaderString:@"Catalogs"] identifier:nil];
@@ -640,6 +651,22 @@ DDLogLevel ddLogLevel;
 
 #pragma mark -
 #pragma mark Manifest list right-click menu actions
+
+- (void)importManifestsFromFile
+{
+    if ([self.manifestImporter updateImporterStatusWithCSVFile:nil]) {
+        NSWindow *window = [self.manifestImporter window];
+        NSInteger result = [NSApp runModalForWindow:window];
+        if (result == NSModalResponseOK) {
+            
+        }
+    }
+}
+
+- (IBAction)importManifestsFromFileAction:(id)sender
+{
+    [self importManifestsFromFile];
+}
 
 - (void)renameSelectedManifest
 {
@@ -1193,6 +1220,99 @@ DDLogLevel ddLogLevel;
         return FALSE;
     }
 }
+
+- (BOOL)canImportURL:(NSURL *)fileURL
+{
+    NSString *typeIdentifier;
+    [fileURL getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:nil];
+    if ([[NSWorkspace sharedWorkspace] type:typeIdentifier conformsToType:(NSString *)kUTTypePlainText]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
+{
+    NSDragOperation result = NSDragOperationNone;
+    
+    /*
+     Packages table view validations
+     */
+    if (aTableView == self.manifestsListTableView) {
+        /*
+         Check if we have regular files
+         */
+        NSArray *dragTypes = [[info draggingPasteboard] types];
+        if ([dragTypes containsObject:NSFilenamesPboardType]) {
+            
+            NSPasteboard *pasteboard = [info draggingPasteboard];
+            NSArray *classes = [NSArray arrayWithObject:[NSURL class]];
+            NSDictionary *options = @{NSPasteboardURLReadingFileURLsOnlyKey : @YES};
+            NSArray *urls = [pasteboard readObjectsForClasses:classes options:options];
+            
+            for (NSURL *uri in urls) {
+                BOOL canImport = [self canImportURL:uri];
+                if (canImport) {
+                    [aTableView setDropRow:-1 dropOperation:NSTableViewDropOn];
+                    result = NSDragOperationCopy;
+                } else {
+                    result = NSDragOperationNone;
+                }
+            }
+            
+        } else {
+            result = NSDragOperationNone;
+        }
+    }
+    
+    return result;
+}
+
+
+- (BOOL)tableView:(NSTableView *)theTableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
+{
+    
+    if (theTableView == self.manifestsListTableView) {
+        /*
+         Check if we have regular files
+         */
+        NSArray *dragTypes = [[info draggingPasteboard] types];
+        if ([dragTypes containsObject:NSFilenamesPboardType]) {
+            
+            NSPasteboard *pasteboard = [info draggingPasteboard];
+            NSArray *classes = [NSArray arrayWithObject:[NSURL class]];
+            NSDictionary *options = @{NSPasteboardURLReadingFileURLsOnlyKey : @YES};
+            NSArray *urls = [pasteboard readObjectsForClasses:classes options:options];
+            
+            NSMutableArray *temporarySupportedURLs = [[NSMutableArray alloc] init];
+            for (NSURL *uri in urls) {
+                BOOL canImport = [self canImportURL:uri];
+                if (canImport) {
+                    [temporarySupportedURLs addObject:uri];
+                }
+            }
+            NSArray *supportedURLs = [NSArray arrayWithArray:temporarySupportedURLs];
+            if ([self.manifestImporter updateImporterStatusWithCSVFile:supportedURLs[0]]) {
+                NSWindow *window = [self.manifestImporter window];
+                NSInteger result = [NSApp runModalForWindow:window];
+                if (result == NSModalResponseOK) {
+                    
+                }
+            }
+            return YES;
+            
+        } else {
+            return NO;
+        }
+    }
+    
+    else {
+        return NO;
+    }
+    return NO;
+}
+
 
 # pragma mark -
 # pragma mark NSOutlineView delegate and data source methods

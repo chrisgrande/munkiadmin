@@ -505,11 +505,12 @@ static dispatch_queue_t serialQueue;
     
     NSManagedObjectContext *moc = [self appDelegateMoc];
     NSArray *stringObjectTypes = @[@"managedInstall",
-            @"managedUninstall",
-            @"managedUpdate",
-            @"optionalInstall",
-            @"requires",
-            @"updateFor"];
+                                   @"managedUninstall",
+                                   @"managedUpdate",
+                                   @"optionalInstall",
+                                   @"featuredItem",
+                                   @"requires",
+                                   @"updateFor"];
     
     NSFetchRequest *getReferencesByName = [[NSFetchRequest alloc] init];
     [getReferencesByName setEntity:[NSEntityDescription entityForName:@"StringObject" inManagedObjectContext:moc]];
@@ -571,12 +572,14 @@ static dispatch_queue_t serialQueue;
     NSMutableArray *managedUninstalls = [[NSMutableArray alloc] init];
     NSMutableArray *managedUpdates = [[NSMutableArray alloc] init];
     NSMutableArray *optionalInstalls = [[NSMutableArray alloc] init];
+    NSMutableArray *featuredItems = [[NSMutableArray alloc] init];
     
     // Manifest conditional items
     NSMutableArray *conditionalManagedInstalls = [[NSMutableArray alloc] init];
     NSMutableArray *conditionalManagedUninstalls = [[NSMutableArray alloc] init];
     NSMutableArray *conditionalManagedUpdates = [[NSMutableArray alloc] init];
     NSMutableArray *conditionalOptionalInstalls = [[NSMutableArray alloc] init];
+    NSMutableArray *conditionalFeaturedItems = [[NSMutableArray alloc] init];
     
     // Pkginfo items
     NSMutableArray *requiresItems = [[NSMutableArray alloc] init];
@@ -588,6 +591,7 @@ static dispatch_queue_t serialQueue;
      - managed_uninstalls item in a manifest
      - managed_updates item in a manifest
      - optional_installs item in a manifest
+     - featured_items item in a manifest
      - any of the above within a condition in a manifest
      - requires item in a pkginfo
      - update_for item in a pkginfo
@@ -604,6 +608,8 @@ static dispatch_queue_t serialQueue;
             [managedUpdates addObject:aReference];
         } else if (aReference.optionalInstallReference) {
             [optionalInstalls addObject:aReference];
+        } else if (aReference.featuredItemReference) {
+            [featuredItems addObject:aReference];
         }
         
         else if (aReference.managedInstallConditionalReference) {
@@ -614,6 +620,8 @@ static dispatch_queue_t serialQueue;
             [conditionalManagedUpdates addObject:aReference];
         } else if (aReference.optionalInstallConditionalReference) {
             [conditionalOptionalInstalls addObject:aReference];
+        } else if (aReference.featuredItemConditionalReference) {
+            [conditionalFeaturedItems addObject:aReference];
         }
         
         else if (aReference.requiresReference) {
@@ -627,11 +635,13 @@ static dispatch_queue_t serialQueue;
     if (managedUninstalls) combined[@"managedUninstalls"] = managedUninstalls;
     if (managedUpdates) combined[@"managedUpdates"] = managedUpdates;
     if (optionalInstalls) combined[@"optionalInstalls"] = optionalInstalls;
+    if (featuredItems) combined[@"featuredItems"] = featuredItems;
     
     if (conditionalManagedInstalls) combined[@"conditionalManagedInstalls"] = conditionalManagedInstalls;
     if (conditionalManagedUninstalls) combined[@"conditionalManagedUninstalls"] = conditionalManagedUninstalls;
     if (conditionalManagedUpdates) combined[@"conditionalManagedUpdates"] = conditionalManagedUpdates;
     if (conditionalOptionalInstalls) combined[@"conditionalOptionalInstalls"] = conditionalOptionalInstalls;
+    if (conditionalFeaturedItems) combined[@"conditionalFeaturedItems"] = conditionalFeaturedItems;
     
     if (requiresItems) combined[@"requiresItems"] = requiresItems;
     if (updateForItems) combined[@"updateForItems"] = updateForItems;
@@ -643,6 +653,7 @@ static dispatch_queue_t serialQueue;
      - managed_uninstalls item in a manifest
      - managed_updates item in a manifest
      - optional_installs item in a manifest
+     - featured_items item in a manifest
      - any of the above within a condition in a manifest
      - requires item in a pkginfo
      - update_for item in a pkginfo
@@ -653,12 +664,14 @@ static dispatch_queue_t serialQueue;
     NSMutableArray *managedUninstallsWithVersion = [[NSMutableArray alloc] init];
     NSMutableArray *managedUpdatesWithVersion = [[NSMutableArray alloc] init];
     NSMutableArray *optionalInstallsWithVersion = [[NSMutableArray alloc] init];
+    NSMutableArray *featuredItemsWithVersion = [[NSMutableArray alloc] init];
     
     // Manifest conditional items
     NSMutableArray *conditionalManagedInstallsWithVersion = [[NSMutableArray alloc] init];
     NSMutableArray *conditionalManagedUninstallsWithVersion = [[NSMutableArray alloc] init];
     NSMutableArray *conditionalManagedUpdatesWithVersion = [[NSMutableArray alloc] init];
     NSMutableArray *conditionalOptionalInstallsWithVersion = [[NSMutableArray alloc] init];
+    NSMutableArray *conditionalFeaturedItemsWithVersion = [[NSMutableArray alloc] init];
     
     // Pkginfo items
     NSMutableArray *requiresItemsWithVersion = [[NSMutableArray alloc] init];
@@ -675,6 +688,8 @@ static dispatch_queue_t serialQueue;
             [managedUpdatesWithVersion addObject:aReference];
         } else if (aReference.optionalInstallReference) {
             [optionalInstallsWithVersion addObject:aReference];
+        } else if (aReference.featuredItemReference) {
+            [featuredItemsWithVersion addObject:aReference];
         }
         
         else if (aReference.managedInstallConditionalReference) {
@@ -685,6 +700,8 @@ static dispatch_queue_t serialQueue;
             [conditionalManagedUpdatesWithVersion addObject:aReference];
         } else if (aReference.optionalInstallConditionalReference) {
             [conditionalOptionalInstallsWithVersion addObject:aReference];
+        } else if (aReference.featuredItemConditionalReference) {
+            [conditionalFeaturedItemsWithVersion addObject:aReference];
         }
         
         else if (aReference.requiresReference) {
@@ -698,11 +715,13 @@ static dispatch_queue_t serialQueue;
     if (managedUninstallsWithVersion) combined[@"managedUninstallsWithVersion"] = managedUninstallsWithVersion;
     if (managedUpdatesWithVersion) combined[@"managedUpdatesWithVersion"] = managedUpdatesWithVersion;
     if (optionalInstallsWithVersion) combined[@"optionalInstallsWithVersion"] = optionalInstallsWithVersion;
+    if (featuredItemsWithVersion) combined[@"featuredItemsWithVersion"] = featuredItemsWithVersion;
     
     if (conditionalManagedInstallsWithVersion) combined[@"conditionalManagedInstallsWithVersion"] = conditionalManagedInstallsWithVersion;
     if (conditionalManagedUninstallsWithVersion) combined[@"conditionalManagedUninstallsWithVersion"] = conditionalManagedUninstallsWithVersion;
     if (conditionalManagedUpdatesWithVersion) combined[@"conditionalManagedUpdatesWithVersion"] = conditionalManagedUpdatesWithVersion;
     if (conditionalOptionalInstallsWithVersion) combined[@"conditionalOptionalInstallsWithVersion"] = conditionalOptionalInstallsWithVersion;
+    if (conditionalFeaturedItemsWithVersion) combined[@"conditionalFeaturedItemsWithVersion"] = conditionalFeaturedItemsWithVersion;
     
     if (requiresItemsWithVersion) combined[@"requiresItemsWithVersion"] = requiresItemsWithVersion;
     if (updateForItemsWithVersion) combined[@"updateForItemsWithVersion"] = updateForItemsWithVersion;
@@ -759,6 +778,37 @@ static dispatch_queue_t serialQueue;
         }
     } else {
         return NO;
+    }
+    
+    
+    return succeeded;
+}
+
+- (BOOL)duplicateManifest:(ManifestMO *)manifest toURL:(NSURL *)newURL
+{
+    BOOL succeeded = NO;
+    
+    DDLogVerbose(@"%@", NSStringFromSelector(_cmd));
+        
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSError *copyError = nil;
+    if ([fm copyItemAtURL:manifest.manifestURL toURL:newURL error:&copyError]) {
+        /*
+         Set date attributes of the new item to current date and time.
+         */
+        NSDate *now = [NSDate date];
+        [newURL setResourceValues:@{NSURLCreationDateKey: now, NSURLContentAccessDateKey: now, NSURLContentModificationDateKey: now} error:nil];
+        
+        /*
+         Scan the new item
+         */
+        MAManifestScanner *manifestScanner = [[MAManifestScanner alloc] initWithURL:newURL];
+        manifestScanner.performFullScan = YES;
+        [manifestScanner start];
+        succeeded = YES;
+    } else {
+        DDLogError(@"Copying failed with error: %@", [copyError description]);
+        [NSApp presentError:copyError];
     }
     
     
@@ -858,6 +908,7 @@ static dispatch_queue_t serialQueue;
              - managed_uninstalls item in a manifest
              - managed_updates item in a manifest
              - optional_installs item in a manifest
+             - featured_items item in a manifest
              - requires item in a package
              - update_for item in a package
              */
@@ -936,6 +987,42 @@ static dispatch_queue_t serialQueue;
         } else {
             [objectsToDelete addObject:aPackage.packageInfoURL];
         }
+        
+        if ((aPackage.uninstallerItemURL != nil) && removeInstallerItem) {
+            /*
+             Check if there are other pkginfos that reference the uninstaller item
+             */
+            NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+            [fetchRequest setEntity:[NSEntityDescription entityForName:@"Package" inManagedObjectContext:moc]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uninstallerItemURL == %@", aPackage.uninstallerItemURL];
+            [fetchRequest setPredicate:predicate];
+            if ([moc countForFetchRequest:fetchRequest error:nil] > 1) {
+                DDLogInfo(@"The uninstaller item is referenced by other packages. Should not remove it...");
+                for (PackageMO *foundPackage in [moc executeFetchRequest:fetchRequest error:nil]) {
+                    if (![foundPackage isEqualTo:aPackage]) {
+                        DDLogInfo(@"Installer item referenced from %@", foundPackage.titleWithVersion);
+                    }
+                }
+            } else {
+                [objectsToDelete addObject:aPackage.uninstallerItemURL];
+            }
+        }
+        
+        /*
+         Check that the files actually exist on disk before trying to remove them
+         */
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSMutableArray *fileURLsNotFoundOndisk = [NSMutableArray new];
+        for (NSURL *fileURL in objectsToDelete) {
+            if (![fm fileExistsAtPath:[fileURL path]]) {
+                DDLogInfo(@"Not trying to remove non-existent file: %@", [fileURL path]);
+                [fileURLsNotFoundOndisk addObject:fileURL];
+            }
+        }
+        if ([fileURLsNotFoundOndisk count] > 0) {
+            [objectsToDelete removeObjectsInArray:fileURLsNotFoundOndisk];
+        }
+        
         [packageGroup removePackagesObject:aPackage];
         [moc deleteObject:aPackage];
     }
@@ -1085,6 +1172,7 @@ static dispatch_queue_t serialQueue;
          - managed_uninstalls item in a manifest
          - managed_updates item in a manifest
          - optional_installs item in a manifest
+         - featured_items item in a manifest
          - requires item in a package
          - update_for item in a package
          */
@@ -1110,6 +1198,10 @@ static dispatch_queue_t serialQueue;
                 ManifestMO *manifest = aReference.optionalInstallReference;
                 manifest.hasUnstagedChangesValue = YES;
                 logMessage = [NSString stringWithFormat:@"Renamed optional_installs reference \"%@\" to \"%@\" in manifest %@", oldName, aReference.title, manifest.title];
+            } else if (aReference.featuredItemReference) {
+                ManifestMO *manifest = aReference.featuredItemReference;
+                manifest.hasUnstagedChangesValue = YES;
+                logMessage = [NSString stringWithFormat:@"Renamed featured_items reference \"%@\" to \"%@\" in manifest %@", oldName, aReference.title, manifest.title];
             }
             
             else if (aReference.managedInstallConditionalReference) {
@@ -1133,6 +1225,11 @@ static dispatch_queue_t serialQueue;
                 ManifestMO *manifest = aReference.optionalInstallConditionalReference.manifest;
                 manifest.hasUnstagedChangesValue = YES;
                 logMessage = [NSString stringWithFormat:@"Renamed optional_installs reference \"%@\" to \"%@\" in manifest %@ under condition \"%@\"", oldName, aReference.title, manifest.title, cond.titleWithParentTitle];
+            } else if (aReference.featuredItemConditionalReference) {
+                ConditionalItemMO *cond = aReference.featuredItemConditionalReference;
+                ManifestMO *manifest = aReference.featuredItemConditionalReference.manifest;
+                manifest.hasUnstagedChangesValue = YES;
+                logMessage = [NSString stringWithFormat:@"Renamed featured_items reference \"%@\" to \"%@\" in manifest %@ under condition \"%@\"", oldName, aReference.title, manifest.title, cond.titleWithParentTitle];
             }
             
             else if (aReference.requiresReference) {
@@ -1171,6 +1268,10 @@ static dispatch_queue_t serialQueue;
                 ManifestMO *manifest = aReference.optionalInstallReference;
                 manifest.hasUnstagedChangesValue = YES;
                 logMessage = [NSString stringWithFormat:@"Renamed optional_installs reference \"%@\" to \"%@\" in manifest %@", oldNameWithVersion, aReference.title, manifest.title];
+            } else if (aReference.featuredItemReference) {
+                ManifestMO *manifest = aReference.featuredItemReference;
+                manifest.hasUnstagedChangesValue = YES;
+                logMessage = [NSString stringWithFormat:@"Renamed featured_items reference \"%@\" to \"%@\" in manifest %@", oldNameWithVersion, aReference.title, manifest.title];
             }
             
             else if (aReference.managedInstallConditionalReference) {
@@ -1193,6 +1294,11 @@ static dispatch_queue_t serialQueue;
                 ManifestMO *manifest = aReference.optionalInstallConditionalReference.manifest;
                 manifest.hasUnstagedChangesValue = YES;
                 logMessage = [NSString stringWithFormat:@"Renamed optional_installs reference \"%@\" to \"%@\" in manifest %@ under condition \"%@\"", oldNameWithVersion, aReference.title, manifest.title, cond.titleWithParentTitle];
+            } else if (aReference.featuredItemConditionalReference) {
+                ConditionalItemMO *cond = aReference.featuredItemConditionalReference;
+                ManifestMO *manifest = aReference.featuredItemConditionalReference.manifest;
+                manifest.hasUnstagedChangesValue = YES;
+                logMessage = [NSString stringWithFormat:@"Renamed featured_items reference \"%@\" to \"%@\" in manifest %@ under condition \"%@\"", oldNameWithVersion, aReference.title, manifest.title, cond.titleWithParentTitle];
             }
             
             else if (aReference.requiresReference) {
@@ -1737,7 +1843,7 @@ static dispatch_queue_t serialQueue;
                                 }
                             }
                         }
-                        if (packages) {
+                        if ([packages count] > 0) {
                             DDLogInfo(@"%@", packages);
                             packageURL = [packages sortedArrayUsingSelector:@selector(compare:)][0];
                         }
@@ -2617,43 +2723,44 @@ static dispatch_queue_t serialQueue;
          */
         NSSet *originalKeysSet = [NSSet setWithArray:sortedOriginalKeys];
         NSSet *newKeysSet = [NSSet setWithArray:sortedPackageKeys];
-        NSArray *keysToDelete = @[@"blocking_applications",
-                @"category",
-                @"description",
-                @"developer",
-                @"display_name",
-                @"force_install_after_date",
-                @"icon_hash",
-                @"icon_name",
-                @"installable_condition",
-                @"installcheck_script",
-                @"installed_size",
-                @"installer_environment",
-                @"installer_item_hash",
-                @"installer_item_location",
-                @"installer_item_size",
-                @"installer_type",
-                @"installer_item_size",
-                @"installer_item_size",
-                @"maximum_os_version",
-                @"minimum_munki_version",
-                @"minimum_os_version",
-                @"notes",
-                @"OnDemand",
-                @"package_path",
-                @"preinstall_alert",
-                @"preinstall_script",
-                @"preuninstall_alert",
-                @"preuninstall_script",
-                @"postinstall_script",
-                @"postuninstall_script",
-                @"RestartAction",
-                @"supported_architectures",
-                @"uninstall_method",
-                @"uninstallcheck_script",
-                @"uninstaller_item_location",
-                @"uninstall_script",
-                @"version"];
+        NSArray *keysToDelete = @[@"allow_untrusted",
+                                  @"blocking_applications",
+                                  @"category",
+                                  @"description",
+                                  @"developer",
+                                  @"display_name",
+                                  @"force_install_after_date",
+                                  @"icon_hash",
+                                  @"icon_name",
+                                  @"installable_condition",
+                                  @"installcheck_script",
+                                  @"installed_size",
+                                  @"installer_environment",
+                                  @"installer_item_hash",
+                                  @"installer_item_location",
+                                  @"installer_item_size",
+                                  @"installer_type",
+                                  @"installer_item_size",
+                                  @"installer_item_size",
+                                  @"maximum_os_version",
+                                  @"minimum_munki_version",
+                                  @"minimum_os_version",
+                                  @"notes",
+                                  @"OnDemand",
+                                  @"package_path",
+                                  @"preinstall_alert",
+                                  @"preinstall_script",
+                                  @"preuninstall_alert",
+                                  @"preuninstall_script",
+                                  @"postinstall_script",
+                                  @"postuninstall_script",
+                                  @"RestartAction",
+                                  @"supported_architectures",
+                                  @"uninstall_method",
+                                  @"uninstallcheck_script",
+                                  @"uninstaller_item_location",
+                                  @"uninstall_script",
+                                  @"version"];
         
         /*
          Determine which keys were removed
@@ -2803,6 +2910,7 @@ static dispatch_queue_t serialQueue;
                                   @"managed_uninstalls",
                                   @"managed_updates",
                                   @"optional_installs",
+                                  @"featured_items",
                                   [[NSUserDefaults standardUserDefaults] stringForKey:@"manifestUserNameKey"],
                                   [[NSUserDefaults standardUserDefaults] stringForKey:@"manifestDisplayNameKey"],
                                   [[NSUserDefaults standardUserDefaults] stringForKey:@"manifestAdminNotesKey"]];
