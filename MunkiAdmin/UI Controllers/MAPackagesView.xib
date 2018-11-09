@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14269.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -166,7 +166,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView wantsLayer="YES" focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" autosaveName="packagesTableViewWithIcons" rowSizeStyle="automatic" headerView="24" viewBased="YES" id="22" customClass="MATableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="625" height="633"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="626" height="633"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -354,11 +354,11 @@
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                         <prototypeCellViews>
                                                             <tableCellView id="B17-Wd-NfF">
-                                                                <rect key="frame" x="287" y="1" width="112" height="17"/>
+                                                                <rect key="frame" x="287" y="1" width="113" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="WCA-Mh-a0U">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="112" height="17"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="113" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="xro-n7-SQ1">
                                                                             <font key="font" metaFont="cellTitle"/>
@@ -390,21 +390,21 @@
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                         <prototypeCellViews>
                                                             <tableCellView id="aRE-Kw-Rko">
-                                                                <rect key="frame" x="402" y="1" width="121" height="17"/>
+                                                                <rect key="frame" x="403" y="1" width="121" height="26"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="shv-qN-j9n">
-                                                                        <rect key="frame" x="0.0" y="1" width="121" height="16"/>
+                                                                    <tokenField verticalHuggingPriority="750" id="NZH-LT-L6z">
+                                                                        <rect key="frame" x="1" y="2" width="119" height="23"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="vnj-ul-Stv">
-                                                                            <font key="font" metaFont="cellTitle"/>
+                                                                        <tokenFieldCell key="cell" controlSize="small" lineBreakMode="truncatingMiddle" alignment="left" allowsEditingTextAttributes="YES" id="AUn-GG-bzP">
+                                                                            <font key="font" metaFont="smallSystem"/>
                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                        </textFieldCell>
+                                                                        </tokenFieldCell>
                                                                         <connections>
-                                                                            <binding destination="aRE-Kw-Rko" name="value" keyPath="objectValue.catalogsDescriptionString" id="IXO-KA-UFD"/>
+                                                                            <binding destination="aRE-Kw-Rko" name="value" keyPath="objectValue.catalogStrings" id="vPA-hf-TT0"/>
                                                                         </connections>
-                                                                    </textField>
+                                                                    </tokenField>
                                                                 </subviews>
                                                             </tableCellView>
                                                         </prototypeCellViews>
@@ -534,7 +534,7 @@
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                         <prototypeCellViews>
                                                             <tableCellView id="Loo-8r-HhR">
-                                                                <rect key="frame" x="526" y="1" width="97" height="17"/>
+                                                                <rect key="frame" x="527" y="1" width="97" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="c15-q5-bzh">
@@ -606,7 +606,7 @@
                                             </tableView>
                                         </subviews>
                                     </clipView>
-                                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="23">
+                                    <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="23">
                                         <rect key="frame" x="0.0" y="634" width="625" height="16"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
@@ -615,7 +615,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <tableHeaderView key="headerView" id="24">
-                                        <rect key="frame" x="0.0" y="0.0" width="625" height="17"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="626" height="17"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
@@ -632,36 +632,6 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </searchFieldCell>
                                             <connections>
-                                                <binding destination="-2" name="predicate2" keyPath="searchFieldPredicate" previousBinding="BAN-n3-IFR" id="I3L-wE-nXC">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">Name</string>
-                                                        <string key="NSPredicateFormat">munki_name contains[cd] $value</string>
-                                                    </dictionary>
-                                                </binding>
-                                                <binding destination="-2" name="predicate3" keyPath="searchFieldPredicate" previousBinding="I3L-wE-nXC" id="o7T-Ec-Oaz">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">Display Name</string>
-                                                        <string key="NSPredicateFormat">munki_display_name contains[cd] $value</string>
-                                                    </dictionary>
-                                                </binding>
-                                                <binding destination="-2" name="predicate4" keyPath="searchFieldPredicate" previousBinding="o7T-Ec-Oaz" id="g57-5S-KZY">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">Description</string>
-                                                        <string key="NSPredicateFormat">munki_description contains[cd] $value</string>
-                                                    </dictionary>
-                                                </binding>
-                                                <binding destination="-2" name="predicate5" keyPath="searchFieldPredicate" previousBinding="g57-5S-KZY" id="XCh-sT-Ytz">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">Admin Notes</string>
-                                                        <string key="NSPredicateFormat">munki_notes contains[cd] $value</string>
-                                                    </dictionary>
-                                                </binding>
-                                                <binding destination="-2" name="predicate6" keyPath="searchFieldPredicate" previousBinding="XCh-sT-Ytz" id="nhe-Ob-R2V">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">Any requires item</string>
-                                                        <string key="NSPredicateFormat">SUBQUERY(requirements, $requirement, $requirement.title contains[cd] $value).@count &gt; 0</string>
-                                                    </dictionary>
-                                                </binding>
                                                 <binding destination="-2" name="predicate7" keyPath="searchFieldPredicate" previousBinding="nhe-Ob-R2V" id="7Am-sB-Qtx">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">Any update_for item</string>
@@ -672,6 +642,36 @@
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">Any</string>
                                                         <string key="NSPredicateFormat">munki_name contains[cd] $value OR munki_display_name contains[cd] $value OR munki_description contains[cd] $value OR munki_notes contains[cd] $value</string>
+                                                    </dictionary>
+                                                </binding>
+                                                <binding destination="-2" name="predicate2" keyPath="searchFieldPredicate" previousBinding="BAN-n3-IFR" id="I3L-wE-nXC">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">Name</string>
+                                                        <string key="NSPredicateFormat">munki_name contains[cd] $value</string>
+                                                    </dictionary>
+                                                </binding>
+                                                <binding destination="-2" name="predicate5" keyPath="searchFieldPredicate" previousBinding="g57-5S-KZY" id="XCh-sT-Ytz">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">Admin Notes</string>
+                                                        <string key="NSPredicateFormat">munki_notes contains[cd] $value</string>
+                                                    </dictionary>
+                                                </binding>
+                                                <binding destination="-2" name="predicate4" keyPath="searchFieldPredicate" previousBinding="o7T-Ec-Oaz" id="g57-5S-KZY">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">Description</string>
+                                                        <string key="NSPredicateFormat">munki_description contains[cd] $value</string>
+                                                    </dictionary>
+                                                </binding>
+                                                <binding destination="-2" name="predicate6" keyPath="searchFieldPredicate" previousBinding="XCh-sT-Ytz" id="nhe-Ob-R2V">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">Any requires item</string>
+                                                        <string key="NSPredicateFormat">SUBQUERY(requirements, $requirement, $requirement.title contains[cd] $value).@count &gt; 0</string>
+                                                    </dictionary>
+                                                </binding>
+                                                <binding destination="-2" name="predicate3" keyPath="searchFieldPredicate" previousBinding="I3L-wE-nXC" id="o7T-Ec-Oaz">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">Display Name</string>
+                                                        <string key="NSPredicateFormat">munki_display_name contains[cd] $value</string>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
@@ -808,7 +808,7 @@
                                                     <binding destination="68" name="title" keyPath="selection.requirements.@count" id="526"/>
                                                 </connections>
                                             </button>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="400">
+                                            <textField verticalHuggingPriority="750" id="400">
                                                 <rect key="frame" x="-2" y="17" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Update for" id="404">
@@ -817,7 +817,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="382">
+                                            <textField verticalHuggingPriority="750" id="382">
                                                 <rect key="frame" x="-2" y="89" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Items to copy" id="386">
@@ -826,7 +826,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="364">
+                                            <textField verticalHuggingPriority="750" id="364">
                                                 <rect key="frame" x="-2" y="161" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Catalogs" id="368">
@@ -847,7 +847,7 @@
                                                     <binding destination="68" name="title" keyPath="selection.numberOfKeys" id="541"/>
                                                 </connections>
                                             </button>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="535">
+                                            <textField verticalHuggingPriority="750" id="535">
                                                 <rect key="frame" x="-2" y="233" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pkginfo keys" id="536">
@@ -856,7 +856,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="370">
+                                            <textField verticalHuggingPriority="750" id="370">
                                                 <rect key="frame" x="-2" y="65" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Receipts" id="374">
@@ -865,7 +865,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="376">
+                                            <textField verticalHuggingPriority="750" id="376">
                                                 <rect key="frame" x="-2" y="113" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Installs" id="380">
@@ -874,7 +874,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="394">
+                                            <textField verticalHuggingPriority="750" id="394">
                                                 <rect key="frame" x="-2" y="41" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Requires" id="398">
@@ -907,7 +907,7 @@
                                                     <binding destination="68" name="title" keyPath="selection.installerChoicesItems.@count" id="522"/>
                                                 </connections>
                                             </button>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="515">
+                                            <textField verticalHuggingPriority="750" id="515">
                                                 <rect key="frame" x="-2" y="185" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Blocking apps" id="518">
@@ -928,7 +928,7 @@
                                                     <binding destination="68" name="title" keyPath="selection.supportedArchitectures.@count" id="549"/>
                                                 </connections>
                                             </button>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="543">
+                                            <textField verticalHuggingPriority="750" id="543">
                                                 <rect key="frame" x="-2" y="209" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Architectures" id="544">
@@ -937,7 +937,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField verticalHuggingPriority="750" misplaced="YES" id="516">
+                                            <textField verticalHuggingPriority="750" id="516">
                                                 <rect key="frame" x="-2" y="137" width="97" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Choices XML" id="517">
@@ -982,7 +982,7 @@
                                                     <binding destination="68" name="value" keyPath="selection.packageInfoDateCreated" id="174"/>
                                                 </connections>
                                             </textField>
-                                            <pathControl focusRingType="none" verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" id="151">
+                                            <pathControl focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" id="151">
                                                 <rect key="frame" x="95" y="76" width="124" height="22"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                 <pathCell key="cell" controlSize="small" selectable="YES" focusRingType="none" alignment="left" pathStyle="popUp" id="152">
@@ -1127,7 +1127,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <pathControl focusRingType="none" verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" id="184">
+                                            <pathControl focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" id="184">
                                                 <rect key="frame" x="95" y="76" width="122" height="22"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                 <pathCell key="cell" controlSize="small" selectable="YES" focusRingType="none" alignment="left" pathStyle="popUp" id="198">
@@ -1298,8 +1298,8 @@
                             <rect key="frame" x="20" y="20" width="191" height="56"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <clipView key="contentView" drawsBackground="NO" id="GDB-3X-xAf">
-                                <rect key="frame" x="1" y="1" width="174" height="54"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <rect key="frame" x="1" y="1" width="189" height="54"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="354">
                                         <rect key="frame" x="0.0" y="0.0" width="174" height="54"/>
@@ -1315,12 +1315,12 @@
                                     </textView>
                                 </subviews>
                             </clipView>
-                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="353">
+                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="353">
                                 <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                             <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="352">
-                                <rect key="frame" x="175" y="1" width="15" height="54"/>
+                                <rect key="frame" x="174" y="1" width="16" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                         </scrollView>
@@ -1343,8 +1343,8 @@
                             <rect key="frame" x="20" y="20" width="191" height="57"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <clipView key="contentView" drawsBackground="NO" id="vsX-GN-cfH">
-                                <rect key="frame" x="1" y="1" width="174" height="55"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <rect key="frame" x="1" y="1" width="189" height="55"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="358">
                                         <rect key="frame" x="0.0" y="0.0" width="174" height="55"/>
@@ -1357,12 +1357,12 @@
                                     </textView>
                                 </subviews>
                             </clipView>
-                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="359">
+                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="359">
                                 <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                             <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="360">
-                                <rect key="frame" x="175" y="1" width="15" height="55"/>
+                                <rect key="frame" x="174" y="1" width="16" height="55"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                         </scrollView>
