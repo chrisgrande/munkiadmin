@@ -533,11 +533,14 @@ DDLogLevel ddLogLevel;
     [manifestsIcon setTemplate:YES];
     [manifestsIcon setSize:toolbarIconSize];
     [segmentedControl setImage:packagesIcon forSegment:0];
-    [segmentedControl setWidth:40 forSegment:0];
+    [segmentedControl setWidth:100 forSegment:0];
+    [segmentedControl setLabel:NSLocalizedString(@"Packages", @"") forSegment:0];
     [segmentedControl setImage:catalogsIcon forSegment:1];
-    [segmentedControl setWidth:40 forSegment:1];
+    [segmentedControl setWidth:100 forSegment:1];
+    [segmentedControl setLabel:NSLocalizedString(@"Catalogs", @"") forSegment:1];
     [segmentedControl setImage:manifestsIcon forSegment:2];
-    [segmentedControl setWidth:40 forSegment:2];
+    [segmentedControl setWidth:100 forSegment:2];
+    [segmentedControl setLabel:NSLocalizedString(@"Manifests", @"") forSegment:2];
     
     [groupItem setPaletteLabel:NSLocalizedString(@"View Mode", @"")];
     [groupItem setLabel:NSLocalizedString(@"View", @"")];
