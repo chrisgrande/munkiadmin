@@ -1361,6 +1361,9 @@ DDLogLevel ddLogLevel;
         if (([[item representedObject] isKindOfClass:[CategorySourceListItemMO class]])) {
             return NSDragOperationMove;
         }
+        else if (([[item representedObject] isKindOfClass:[DeveloperSourceListItemMO class]])) {
+            return NSDragOperationMove;
+        }
         else if (![targetDir.itemType isEqualToString:@"regular"]) {
             return NSDragOperationNone;
         }
@@ -1418,20 +1421,14 @@ DDLogLevel ddLogLevel;
 # pragma mark -
 # pragma mark NSTableView delegates
 
-- (BOOL)tableView:(NSTableView *)theTableView writeRowsWithIndexes:(NSIndexSet *)theRowIndexes toPasteboard:(NSPasteboard*)thePasteboard
+- (id<NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row
 {
-    if (theTableView == self.packagesTableView) {
-        [thePasteboard declareTypes:[NSArray arrayWithObject:NSURLPboardType] owner:self];
-        NSMutableArray *urls = [NSMutableArray array];
-        [theRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            PackageMO *package = [[self.packagesArrayController arrangedObjects] objectAtIndex:idx];
-            [urls addObject:[[package objectID] URIRepresentation]];
-        }];
-        return [thePasteboard writeObjects:urls];
-    } 
-    
-    else {
-        return FALSE;
+    if (tableView == self.packagesTableView) {
+        PackageMO *package = [[self.packagesArrayController arrangedObjects] objectAtIndex:(NSUInteger)row];
+        NSURL *objectURL = [[package objectID] URIRepresentation];
+        return objectURL;
+    } else {
+        return nil;
     }
 }
 

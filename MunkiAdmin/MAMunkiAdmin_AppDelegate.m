@@ -2109,7 +2109,8 @@ DDLogLevel ddLogLevel;
     task.launchPath = launchPath;
     
     NSMutableDictionary *defaultEnv = [[NSMutableDictionary alloc] initWithDictionary:[[NSProcessInfo processInfo] environment]];
-    [defaultEnv setObject:@"YES" forKey:@"NSUnbufferedIO"] ;
+    [defaultEnv setObject:@"YES" forKey:@"NSUnbufferedIO"];
+    [defaultEnv setObject:@"utf-8" forKey:@"PYTHONIOENCODING"];
     task.environment = defaultEnv;
     
     /*
